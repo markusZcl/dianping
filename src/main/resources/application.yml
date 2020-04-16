@@ -1,0 +1,33 @@
+server:
+  port: 8010
+mybatis:
+#  \u5BFB\u627Exml\u6587\u4EF6
+  mapper-locations: classpath:mapping/*.xml
+spring:
+#  \u914D\u7F6E\u6570\u636E\u6E90
+  datasource:
+    name: dianping
+    url: jdbc:mysql://localhost:3306/dianping?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: root
+#    \u91C7\u7528druid\u505A\u8FDE\u63A5\u6C60\u7BA1\u7406
+    type: com.alibaba.druid.pool.DruidDataSource
+#    \u6570\u636E\u5E93\u9A71\u52A8
+    driver-class-name: com.mysql.jdbc.Driver
+  resources:
+#    拒绝默认404的处理方式,为true，如果在控制器没有找到映射方法，就去springboot默认服务器处理中找静态资源，未找到就抛404异常
+    add-mappings: true
+  mvc:
+#    找不到所有匹配的controller，就抛出对应的异常
+    throw-exception-if-no-handler-found: true
+    # 处理静态资源
+    static-path-pattern: /static/**
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+admin:
+  email: markus@163.com
+#密码是markus
+  encryptPassword: I8SW0u4klLPzgKK9c4C4EQ==
+elasticsearch:
+  ip: 127.0.0.1:9200
