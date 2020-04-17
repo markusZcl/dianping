@@ -11,6 +11,9 @@ import com.markus.dianping.dal.ShopModelMapper;
 import com.markus.dianping.model.CategoryModel;
 import com.markus.dianping.model.SellerModel;
 import com.markus.dianping.model.ShopModel;
+import com.markus.dianping.recommend.RecommendService;
+import com.markus.dianping.recommend.RecommendSortService;
+import com.markus.dianping.recommend.ShopSortModel;
 import com.markus.dianping.service.ShopService;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.action.search.SearchRequest;
@@ -51,6 +54,10 @@ public class ShopServiceImpl implements ShopService {
     private CategoryModelMapper categoryModelMapper;
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+    @Autowired
+    private RecommendService recommendService;
+    @Autowired
+    private RecommendSortService recommendSortService;
     @Override
     public ShopModel create(ShopModel shopModel) throws BusinessException {
         shopModel.setCreatedAt(new Date());
@@ -99,7 +106,16 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<ShopModel> recommend(BigDecimal longitude, BigDecimal latitude) {
-        return shopModelMapper.recommend(longitude,latitude);
+        List<Integer> shopIdList = recommendService.recall(148);
+        shopIdList = recommendSortService.sort(shopIdList,148);
+        List<ShopModel> shopModelList = shopIdList.stream().map(id->{
+                ShopModel shopModel =  get(id);
+                shopModel.setIconUrl("/static/image/firstpage/bar_o.png");
+                shopModel.setDistance(100);
+                return shopModel;
+        }).collect(Collectors.toList());
+//        return shopModelMapper.recommend(longitude,latitude);
+        return shopModelList;
     }
 
     @Override
